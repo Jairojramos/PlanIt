@@ -1,36 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PlanIt
 
-## Getting Started
+[English Version](#english) | [Versión en Español](#español)
 
-First, run the development server:
+---
+
+<a id="english"></a>
+## English Version
+
+PlanIt is a comprehensive productivity and focus management SaaS. It integrates task management, habit tracking, and Pomodoro-style focus sessions with AI-driven analytics to optimize deep work and daily workflows.
+
+### System Architecture
+
+Built with a strict Clean Architecture pattern using Next.js (App Router), the project separates concerns into clear layers to ensure scalability and maintainability:
+
+* **Controllers (API Routes):** Handle incoming requests and basic validation.
+* **Services:** Encapsulate core business logic.
+* **Repositories:** Handle data access and Prisma ORM operations.
+* **DTOs:** Enforce data validation and typing boundaries.
+
+### Tech Stack
+
+* **Frontend:** Next.js (React), TypeScript, Tailwind CSS
+* **Backend:** Next.js Server Components / API Routes, Node.js
+* **Database:** PostgreSQL, Prisma ORM
+* **Authentication:** NextAuth.js
+* **AI Integration:** Google Gemini API
+
+### Core Features
+
+* **Task Management:** Full CRUD operations, priority sorting, status tracking, and deadlines.
+* **Habit Tracking:** Daily streak monitoring and historical completion metrics.
+* **Focus System:** Customizable Pomodoro timers linked to tasks, featuring an integrated ambient sound library.
+* **AI Assistant:** Intelligent recommendations for session lengths, break intervals, and productivity planning.
+* **Gamification:** Experience points (XP) and leveling system based on task completion and focus time.
+* **Analytics Dashboard:** Real-time data visualization of productivity trends.
+
+### Local Development Setup
+
+**Prerequisites**
+* Node.js (v20 LTS recommended)
+* PostgreSQL instance
+
+**1. Clone the repository and install dependencies:**
+
+```bash
+git clone [https://github.com/Jairojramos/PlanIt.git](https://github.com/Jairojramos/PlanIt.git)
+cd planit
+npm install
+```
+
+**2. Environment Configuration:**
+
+Create a `.env` file in the root directory and add the following:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/planit"
+NEXTAUTH_SECRET="your_generated_secret"
+NEXTAUTH_URL="http://localhost:3000"
+GEMINI_API_KEY="your_api_key"
+```
+
+**3. Database Initialization:**
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+**4. Start the development server:**
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### License
+Proprietary / All Rights Reserved.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<a id="español"></a>
+## Versión en español
 
-## Learn More
+PlanIt es una plataforma SaaS integral de productividad y gestión de enfoque. Combina la gestión de tareas, el seguimiento de hábitos y sesiones de enfoque tipo Pomodoro con analíticas impulsadas por IA para optimizar el trabajo profundo (deep work) y los flujos diarios.
 
-To learn more about Next.js, take a look at the following resources:
+### Arquitectura del sistema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Construido bajo un estricto patrón de Arquitectura Limpia (Clean Architecture) utilizando Next.js (App Router), el proyecto separa las responsabilidades en capas claras para garantizar su escalabilidad y mantenimiento:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* **Controllers (API Routes):** Manejan las peticiones HTTP entrantes y la validación básica.
+* **Services:** Encapsulan la lógica de negocio central.
+* **Repositories:** Capa exclusiva para el acceso a datos y operaciones con Prisma ORM.
+* **DTOs:** Definen las fronteras de validación de datos y tipado estricto.
 
-## Deploy on Vercel
+### Stack tecnológico
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Frontend:** Next.js (React), TypeScript, Tailwind CSS
+* **Backend:** Next.js Server Components / API Routes, Node.js
+* **Base de datos:** PostgreSQL, Prisma ORM
+* **Autenticación:** NextAuth.js
+* **Integración de IA:** Google Gemini API
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Funcionalidades principales
+
+* **Gestión de tareas:** Operaciones CRUD completas, clasificación por prioridad, seguimiento de estados y fechas límite.
+* **Seguimiento de hábitos:** Monitoreo de rachas (streaks) diarias y métricas de cumplimiento histórico.
+* **Sistema de enfoque:** Temporizadores Pomodoro personalizables vinculados a tareas, con una biblioteca de sonido ambiental integrada.
+* **Asistente de IA:** Recomendaciones inteligentes para duración de sesiones, intervalos de descanso y planificación de productividad.
+* **Gamificación:** Sistema de puntos de experiencia (XP) y niveles basados en la finalización de tareas y tiempo de enfoque.
+* **Panel de analíticas:** Visualización de datos en tiempo real sobre tendencias de productividad.
+
+### Configuración de desarrollo local
+
+**Requisitos previos**
+* Node.js (se recomienda v20 LTS)
+* Instancia de PostgreSQL
+
+**1. Clona el repositorio e instala las dependencias:**
+
+```bash
+git clone [https://github.com/Jairojramos/PlanIt.git](https://github.com/Jairojramos/PlanIt.git)
+cd planit
+npm install
+```
+
+**2. Configuración de entorno:**
+
+Crea un archivo `.env` en la raíz del directorio y añade lo siguiente:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/planit"
+NEXTAUTH_SECRET="your_generated_secret"
+NEXTAUTH_URL="http://localhost:3000"
+GEMINI_API_KEY="your_api_key"
+```
+
+**3. Inicialización de la base de datos:**
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+**4. Inicia el servidor de desarrollo:**
+
+```bash
+npm run dev
+```
+
+### Licencia
+Propietario / Todos los derechos reservados.
