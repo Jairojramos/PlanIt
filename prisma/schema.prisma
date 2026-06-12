@@ -1,13 +1,93 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// PlanIt core models, enums, and PostgreSQL relational mapping
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks     Task[]
+  habits    Habit[]
+  pomodoros PomodoroSession[]  
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PomodoroStatus {
+  COMPLETED
+  INTERRUPTED
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(PENDING)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  pomodoros PomodoroSession[]
+
+  // Optimization: Speeds up queries filtering by user
+  @@index([userId])
+}
+
+model Habit {
+  id            String   @id @default(uuid())
+  title         String
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Optimization: Speeds up queries filtering by user
+  @@index([userId])
+}
+
+model PomodoroSession {
+  id        String         @id @default(uuid())
+  startTime DateTime       @default(now())
+  endTime   DateTime?
+  duration  Int            // Stored in seconds for efficient aggregation
+  status    PomodoroStatus @default(COMPLETED)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Optional relation: A session might be generic (no specific task)
+  taskId    String?
+  task      Task?          @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([taskId])
 }
