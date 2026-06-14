@@ -1,3 +1,5 @@
+// TypeScript compiler configuration. Auto-managed by Next.js, edit with caution.
+
 {
   "compilerOptions": {
     "target": "ES2017",

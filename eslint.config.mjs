@@ -1,3 +1,5 @@
+// ESLint Flat Config: Next.js Web Vitals & TypeScript defaults.
+
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";

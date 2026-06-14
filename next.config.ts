@@ -1,7 +1,9 @@
+// Opt-out Prisma and pg from Turbopack bundling to prevent native bindings resolution errors.
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["@prisma/client", "pg"],
 };
 
 export default nextConfig;
