@@ -8,17 +8,13 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Enums
 
-  tasks     Task[]
-  habits    Habit[]
-  pomodoros PomodoroSession[]  
+enum SubscriptionPlan {
+  TRIAL
+  PREMIUM
+  FREE
+  CANCELED
 }
 
 enum TaskStatus {
@@ -33,9 +29,44 @@ enum TaskPriority {
   HIGH
 }
 
-enum PomodoroStatus {
+enum FocusMode {
+  POMODORO
+  FLOWTIME
+  TIMEBOXING
+  RULE_52_17
+  ULTRADIAN
+  CUSTOM
+}
+
+enum SessionStatus {
   COMPLETED
   INTERRUPTED
+}
+
+// Models
+
+model User {
+  id               String           @id @default(uuid())
+  email            String           @unique
+  name             String?
+  password         String
+  
+  // Gamification metrics
+  xp               Int              @default(0)
+  level            Int              @default(1)
+
+  // SaaS billing and limits
+  plan             SubscriptionPlan @default(TRIAL)
+  trialEndsAt      DateTime?
+  stripeCustomerId String?          @unique
+  stripeSubId      String?          @unique
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  tasks            Task[]
+  habits           Habit[]
+  focusSessions    FocusSession[]  
 }
 
 model Task {
@@ -51,42 +82,56 @@ model Task {
   userId      String
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  pomodoros PomodoroSession[]
+  focusSessions FocusSession[]
 
   // Optimization: Speeds up queries filtering by user
   @@index([userId])
 }
 
 model Habit {
-  id            String   @id @default(uuid())
+  id            String     @id @default(uuid())
   title         String
-  currentStreak Int      @default(0)
-  longestStreak Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  currentStreak Int        @default(0)
+  longestStreak Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  logs          HabitLog[]
 
   // Optimization: Speeds up queries filtering by user
   @@index([userId])
 }
 
-model PomodoroSession {
-  id        String         @id @default(uuid())
-  startTime DateTime       @default(now())
+model HabitLog {
+  id          String   @id @default(uuid())
+  completedAt DateTime @default(now())
+  
+  habitId     String
+  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  // Optimization: Accelerates consistency graph generation and streak calculations
+  @@index([habitId])
+}
+
+model FocusSession {
+  id        String        @id @default(uuid())
+  mode      FocusMode     @default(POMODORO)
+  startTime DateTime      @default(now())
   endTime   DateTime?
-  duration  Int            // Stored in seconds for efficient aggregation
-  status    PomodoroStatus @default(COMPLETED)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  duration  Int           // Stored in seconds for efficient aggregation
+  status    SessionStatus @default(COMPLETED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   userId    String
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Optional relation: A session might be generic (no specific task)
   taskId    String?
-  task      Task?          @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  task      Task?         @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([taskId])
